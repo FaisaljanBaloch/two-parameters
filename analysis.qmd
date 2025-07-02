@@ -12,6 +12,8 @@ library(tidyverse)
 library(primer.data)
 library(tidymodels)
 library(broom)
+library(gt)
+library(marginaleffects)
 ```
 
 ```{r}
@@ -24,7 +26,36 @@ x <- nhanes |>
   slice_sample(n = 50)
 ```
 
-Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year. There is some concern that If the NHANES' data for measuring height may slightly differ from individual recruits. We model height, a continuous outcome variable that represents recruits heights, as a linear function of sex. 
+```{r}
+#| cache: true
+fit_height <- linear_reg() |> fit(height ~ sex, data = x)
+```
+
+```{r}
+plot_predictions(fit_height, condition = "sex", draw = FALSE) |>
+  ggplot(aes(x = sex, y = estimate, color = sex)) +
+  geom_point(size = 4) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.15, linewidth = 1) +
+  geom_hline(aes(yintercept = height), linetype = "dashed", color = "gray40") +
+  labs(
+    title = "Estimated Height by Sex with 95% Confidence Intervals",
+    subtitle = "Males are estimated to be taller than females, with no overlap in confidence intervals.",
+    x = "Sex",
+    y = "Estimated Height (cm)",
+    caption = "Source: Model output from height prediction data"
+  ) +
+  scale_color_manual(values = c("Female" = "#D81B60", "Male" = "#1E88E5")) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(margin = margin(b = 10)),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10))
+  )
+```
+
+Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year. There is some concern that If the NHANES' data for measuring height may slightly differ from individual recruits. We model height, a continuous outcome variable that represents recruits heights, as a linear function of sex. We estimated that men have an expected height of 178 centimeters, while women are around 162 centimeters at height, with confidence of 95% interval.
 
 $$
 Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_p X_{ip} + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
@@ -34,7 +65,19 @@ $$
 \widehat{\text{Height}}_i = 162 + 15.9 \cdot \text{sexMale}_i
 $$
 
+
 ```{r}
-#| cache: true
-fit_height <- linear_reg() |> fit(height ~ sex, data = x)
+fit_height |> tidy(conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high) |>
+  mutate(across(c(estimate, conf.low, conf.high), \(x) round(x, 2))) |>
+  gt() |>
+  cols_label(
+    term = "Term",
+    estimate = "Estimate",
+    conf.low = "95% CI Lower",
+    conf.high = "95% CI Upper"
+  ) |>
+  tab_header(
+    title = "Regression Estimates with 95% Confidence Intervals"
+  )
 ```
