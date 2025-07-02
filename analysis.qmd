@@ -1,0 +1,25 @@
+---
+title: "Two-Parameters"
+author: "Faisal Jan"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(primer.data)
+```
+
+```{r}
+set.seed(10)
+
+x <- nhanes |>
+  filter(age >= 18 & age <= 27) |>
+  select(height, sex) |>
+  drop_na() |>
+  slice_sample(n = 50)
+```
+
+Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year.
