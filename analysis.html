@@ -99,9 +99,12 @@ window.Quarto = {
 </header>
 
 
-<p>Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year. There is some concern that If the NHANES’ data for measuring height may slightly differ from individual recruits.</p>
+<p>Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year. There is some concern that If the NHANES’ data for measuring height may slightly differ from individual recruits. We model height, a continuous outcome variable that represents recruits heights, as a linear function of sex.</p>
 <p><span class="math display">\[
 Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_p X_{ip} + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+\]</span></p>
+<p><span class="math display">\[
+\widehat{\text{Height}}_i = 162 + 15.9 \cdot \text{sexMale}_i
 \]</span></p>
 
 </main>
