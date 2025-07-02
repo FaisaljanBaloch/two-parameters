@@ -10,6 +10,8 @@ execute:
 #| message: false
 library(tidyverse)
 library(primer.data)
+library(tidymodels)
+library(broom)
 ```
 
 ```{r}
@@ -22,4 +24,8 @@ x <- nhanes |>
   slice_sample(n = 50)
 ```
 
-Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year.
+Health and Nutrition are important factors that contribute in change of person height. Using data from the National Health and Nutrition Examination Survey (NHANES), We seek to estimate the average height of USMC recruits for next year. There is some concern that If the NHANES' data for measuring height may slightly differ from individual recruits.
+
+$$
+Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_p X_{ip} + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+$$
